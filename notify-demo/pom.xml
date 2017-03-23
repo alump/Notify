@@ -134,6 +134,8 @@
 
 		</plugins>
 
+		<finalName>NotifyDemo</finalName>
+
 	</build>
 
 	<profiles>
