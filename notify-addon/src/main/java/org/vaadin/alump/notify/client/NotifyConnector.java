@@ -1,28 +1,26 @@
 package org.vaadin.alump.notify.client;
 
 import com.vaadin.client.ServerConnector;
+import com.vaadin.client.communication.ServerRpcQueue;
 import com.vaadin.client.extensions.AbstractExtensionConnector;
 
 import com.vaadin.shared.ui.Connect;
 import org.vaadin.alump.notify.Notify;
 import org.vaadin.alump.notify.client.share.*;
-import org.vaadin.alump.notify.client.util.ClientNotifyStateListener;
+import org.vaadin.alump.notify.client.util.ClientNotification;
+import org.vaadin.alump.notify.client.util.NotifyUtilListener;
 import org.vaadin.alump.notify.client.util.NotifyUtil;
 
 /**
  * Connector for Notify extension class
  */
 @Connect(Notify.class)
-public class NotifyConnector extends AbstractExtensionConnector implements ClientNotifyStateListener {
+public class NotifyConnector extends AbstractExtensionConnector implements NotifyUtilListener {
 
     private NotifyClientRpc clientRpc = new NotifyClientRpc() {
         @Override
-        public void showNotification(NotifyNotification notification) {
-            String iconUrl = null;
-            if(notification.iconRes != null) {
-                iconUrl = NotifyConnector.this.getResourceUrl(notification.iconRes);
-            }
-            NotifyUtil.show(notification.title, notification.body, iconUrl);
+        public void showNotification(SharedNotification notification) {
+            NotifyUtil.show(new ClientNotification(NotifyConnector.this, notification));
         }
 
         @Override
@@ -35,7 +33,7 @@ public class NotifyConnector extends AbstractExtensionConnector implements Clien
     public void init() {
         super.init();
         registerRpc(NotifyClientRpc.class, clientRpc);
-        NotifyUtil.setup(this);
+        NotifyUtil.addListener(this);
     }
 
     @Override
@@ -57,6 +55,24 @@ public class NotifyConnector extends AbstractExtensionConnector implements Clien
 
     @Override
     public void onNewClientNotifyState(NotifyState state) {
-        getRpcProxy(NotifyServerRpc.class).clientStateUpdate(state);
+        getRpcProxy(NotifyServerRpc.class).onClientStateUpdate(state);
     }
+
+    @Override
+    public void onNotificationHandled(int id) {
+        getRpcProxy(NotifyServerRpc.class).onNotificationHandled(id);
+    }
+
+    @Override
+    public void onNotificationClicked(int id) {
+        debug("Calling rpc proxy");
+        getRpcProxy(NotifyServerRpc.class).onNotificationClicked(id);
+        // Calling flush here as optimization might delay call as user is clicking outside browser window
+        getConnection().getMessageSender().sendInvocationsToServer();
+    }
+
+    private static native void debug(String message)
+    /*-{
+        console.log(message);
+    }-*/;
 }

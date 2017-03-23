@@ -1,5 +1,5 @@
 /**
- * NotifyUINotResolvedException.java (Notify)
+ * NotifyRuntimeException.java (Notify)
  *
  * Copyright 2017 Vaadin Ltd, Sami Viitanen <sami.viitanen@vaadin.org>
  *
@@ -18,10 +18,15 @@
 package org.vaadin.alump.notify.exceptions;
 
 /**
- * Exception throws when UI could not be resolved.
+ * Abstract base class for runtime exceptions throws from Notify
  */
-public class NotifyUINotResolvedException extends NotifyRuntimeException {
-    public NotifyUINotResolvedException() {
-        super("Failed to resolve UI");
+public abstract class NotifyRuntimeException extends RuntimeException {
+
+    protected NotifyRuntimeException() {
+        super();
+    }
+
+    protected NotifyRuntimeException(String message) {
+        super(message);
     }
 }

@@ -1,5 +1,5 @@
 /**
- * NotifyUINotResolvedException.java (Notify)
+ * VibrateServerRpc.java (Notify)
  *
  * Copyright 2017 Vaadin Ltd, Sami Viitanen <sami.viitanen@vaadin.org>
  *
@@ -15,13 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.vaadin.alump.notify.exceptions;
+package org.vaadin.alump.notify.client.share;
+
+import com.vaadin.shared.communication.ServerRpc;
 
 /**
- * Exception throws when UI could not be resolved.
+ * Server RPC for Vibrate
  */
-public class NotifyUINotResolvedException extends NotifyRuntimeException {
-    public NotifyUINotResolvedException() {
-        super("Failed to resolve UI");
-    }
+public interface VibrateServerRpc extends ServerRpc {
+    void supportResolved(boolean supported);
 }

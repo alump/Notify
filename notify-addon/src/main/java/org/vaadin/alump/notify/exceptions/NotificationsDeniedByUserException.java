@@ -1,5 +1,5 @@
 /**
- * NotifyUINotResolvedException.java (Notify)
+ * NotificationsDeniedByUserException.java (Notify)
  *
  * Copyright 2017 Vaadin Ltd, Sami Viitanen <sami.viitanen@vaadin.org>
  *
@@ -18,10 +18,10 @@
 package org.vaadin.alump.notify.exceptions;
 
 /**
- * Exception throws when UI could not be resolved.
+ * Notification denied by user exception
  */
-public class NotifyUINotResolvedException extends NotifyRuntimeException {
-    public NotifyUINotResolvedException() {
-        super("Failed to resolve UI");
+public class NotificationsDeniedByUserException extends NotifyRuntimeException {
+    public NotificationsDeniedByUserException() {
+        super("Notifications are denied by user");
     }
 }

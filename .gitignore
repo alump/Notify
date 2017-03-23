@@ -1,0 +1,7 @@
+*.iml
+*.css
+.idea/
+notify-addon/target/
+notify-demo/src/main/webapp/META-INF/
+notify-demo/src/main/webapp/VAADIN/themes/demo/styles.scss.cache
+notify-demo/target/

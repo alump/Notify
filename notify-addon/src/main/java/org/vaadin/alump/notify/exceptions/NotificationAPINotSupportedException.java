@@ -1,5 +1,5 @@
 /**
- * NotifyUINotResolvedException.java (Notify)
+ * NotificationAPINotSupportedException.java (Notify)
  *
  * Copyright 2017 Vaadin Ltd, Sami Viitanen <sami.viitanen@vaadin.org>
  *
@@ -18,10 +18,10 @@
 package org.vaadin.alump.notify.exceptions;
 
 /**
- * Exception throws when UI could not be resolved.
+ * Thrown when notification API is not supported by browser
  */
-public class NotifyUINotResolvedException extends NotifyRuntimeException {
-    public NotifyUINotResolvedException() {
-        super("Failed to resolve UI");
+public class NotificationAPINotSupportedException extends NotifyRuntimeException {
+    public NotificationAPINotSupportedException() {
+        super("Notifications are not supported by browser.");
     }
 }

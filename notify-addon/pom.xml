@@ -5,8 +5,8 @@
 	<groupId>org.vaadin.alump</groupId>
 	<artifactId>notify</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>Notify Add-on</name>
+	<version>0.1.0</version>
+	<name>Notify</name>
 
 	<prerequisites>
 		<maven>3</maven>
@@ -29,24 +29,22 @@
 		<Vaadin-WidgetSet>org.vaadin.alump.notify.WidgetSet</Vaadin-WidgetSet>
 	</properties>
 
-    <!--
 	<organization>
-		<name>My Name</name>
-		<url>https://github.com/mygithubaccount/MyComponent/</url>
+		<name>Sami Viitanen</name>
+		<url>https://github.com/alump/Notify</url>
 	</organization>
 
 	<scm>
-		<url>git://github.com/mygithubaccount/MyComponent.git</url>
-		<connection>scm:git:git://github.com/mygithubaccount/MyComponent.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com:/mygithubaccount/${componentClassName}.git</developerConnection>
-		<tag>MyComponent add-on for Vaadin</tag>
+		<url>git@github.com:alump/Notify.git</url>
+		<connection>scm:git:git@github.com:alump/Notify.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com:alump/Notify.git</developerConnection>
+		<tag>Notify add-on for Vaadin</tag>
 	</scm>
 
 	<issueManagement>
 		<system>GitHub</system>
-		<url>https://github.com/mygithubaccount/MyComponent/issues</url>
+		<url>https://github.com/alump/Notify/issues</url>
 	</issueManagement>
-    -->
 
 	<licenses>
 		<license>

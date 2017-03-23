@@ -1,5 +1,7 @@
 package org.vaadin.alump.notify.client.util;
 
+import com.google.gwt.core.client.JavaScriptObject;
+import com.vaadin.server.Page;
 import org.vaadin.alump.notify.client.share.NotifyState;
 
 import java.util.ArrayList;
@@ -15,7 +17,9 @@ public class NotifyUtil {
 
     private static NotifyState state = NotifyState.UNINITIALIZED;
 
-    private static List<ClientNotifyStateListener> listeners = new ArrayList<>();
+    private static List<NotifyUtilListener> listeners = new ArrayList<>();
+
+    private static List<ClientNotification> queue = new ArrayList<>();
 
     private static void noSupport() {
         LOGGER.warning("Notification API not supported");
@@ -31,14 +35,22 @@ public class NotifyUtil {
     private static void permissionGranted() {
         LOGGER.info("notification permission granted");
         setState(NotifyState.READY);
+
+        queue.forEach(n -> show(n));
+        queue.clear();
+    }
+
+    private static void onNotificationClicked(int id) {
+        listeners.forEach(l -> l.onNotificationClicked(id));
     }
 
     private static void permissionDenied() {
         LOGGER.warning("notification permission denied");
         setState(NotifyState.PERMISSION_DENIED);
+        queue.clear();
     }
 
-    public static void setup(ClientNotifyStateListener listener) {
+    public static void setup(NotifyUtilListener listener) {
         addListener(listener);
         if(state != NotifyState.UNINITIALIZED) {
             listener.onNewClientNotifyState(state);
@@ -47,11 +59,11 @@ public class NotifyUtil {
         }
     }
 
-    public static void addListener(ClientNotifyStateListener listener) {
+    public static void addListener(NotifyUtilListener listener) {
         listeners.add(listener);
     }
 
-    public static void removeListener(ClientNotifyStateListener listener) {
+    public static void removeListener(NotifyUtilListener listener) {
         listeners.remove(listener);
     }
 
@@ -86,20 +98,87 @@ public class NotifyUtil {
         }
     }
 
-     public static void show(String title, String body, String icon) {
+    private static void onNotificationClosed(int id) {
+        fireNotificationHandled(id);
+    }
+
+     public static void show(ClientNotification notification) {
         if(state == NotifyState.READY) {
-            nativeShow(title, body, icon);
+            JavaScriptObject options = createOptions(notification.getBody(), notification.getIconUrl(),
+                    notification.getSoundUrl(), notification.getTimeoutMs());
+            nativeShow(
+                    notification.getId(),
+                    notification.getTitle(),
+                    options,
+                    getClickFlag(notification),
+                    notification.getTimeoutMs());
+
+        } else if(state == NotifyState.PERMISSION_ASKED || state == NotifyState.UNINITIALIZED) {
+            queue.add(notification);
+            LOGGER.info("Permission not granted, queueing message");
+            if(state == NotifyState.UNINITIALIZED) {
+                askPermission();
+            }
         } else {
             LOGGER.severe("API not ready, can not show notification");
+            fireNotificationHandled(notification);
         }
      }
 
-    private native static void nativeShow(String titleStr, String bodyStr, String iconStr)
-    /*-{
-        var options = {
-            body: bodyStr,
-            icon: iconStr
-        };
+     private static int getClickFlag(ClientNotification notification) {
+        if(notification.isCloseOnClick()) {
+            return 2;
+        } else if(notification.isClickable()) {
+            return 1;
+        } else {
+            return 0;
+        }
+     }
+
+     private native static JavaScriptObject createOptions(String bodyStr, String iconUrl, String soundUrl, Integer timeoutMs)
+     /*-{
+        var properties = {};
+
+        if(bodyStr) {
+            properties.body = bodyStr;
+        }
+        if(iconUrl) {
+            properties.icon = iconUrl;
+        }
+        if(soundUrl) {
+            properties.sound = soundUrl;
+        }
+        if(timeoutMs) {
+            properties.requireInteraction = true;
+        }
+
+        return properties;
+     }-*/;
+
+     private native static void nativeShow(int id, String titleStr, JavaScriptObject options, int clickable, Integer timeoutMs)
+     /*-{
         var n = new $wnd.Notification(titleStr,options);
+        if(clickable > 0) {
+            n.onclick = function(event) {
+                event.preventDefault();
+                @org.vaadin.alump.notify.client.util.NotifyUtil::onNotificationClicked(*)(id);
+                if(clickable == 2) {
+                    console.log("Trying to close the notification, as it was clicked");
+                    console.log(event);
+                    n.close();
+                }
+            };
+        }
+        if(timeoutMs) {
+            setTimeout(n.close.bind(n), timeoutMs);
+        }
     }-*/;
+
+    private static void fireNotificationHandled(ClientNotification notification) {
+        fireNotificationHandled(notification.getId());
+    }
+
+    private static void fireNotificationHandled(int id) {
+        listeners.forEach(l -> l.onNotificationHandled(id));
+    }
 }

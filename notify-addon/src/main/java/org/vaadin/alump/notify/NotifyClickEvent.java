@@ -1,5 +1,5 @@
 /**
- * NotifyUINotResolvedException.java (Notify)
+ * NotifyClickEvent.java (Notify)
  *
  * Copyright 2017 Vaadin Ltd, Sami Viitanen <sami.viitanen@vaadin.org>
  *
@@ -15,13 +15,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.vaadin.alump.notify.exceptions;
+package org.vaadin.alump.notify;
+
+import java.io.Serializable;
 
 /**
- * Exception throws when UI could not be resolved.
+ * Event given when Notify notification is clicked
  */
-public class NotifyUINotResolvedException extends NotifyRuntimeException {
-    public NotifyUINotResolvedException() {
-        super("Failed to resolve UI");
+public class NotifyClickEvent implements Serializable {
+
+    private final NotifyItem notification;
+
+    public NotifyClickEvent(NotifyItem notification) {
+        this.notification = notification;
+    }
+
+    public NotifyItem getNotification() {
+        return notification;
     }
 }

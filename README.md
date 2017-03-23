@@ -1,10 +1,10 @@
-# Notity Add-on for Vaadin
+# Notity Add-on for Vaadin 8
 
-Notify add-on gives server side API to Notification and  Vibrate APIs on client side.
+Notify add-on offer new HTML5 ways to notify users when events happens on web application. It uses Notification and Vibrate APIs on client side.
 
-Notification API allows to show notifications on devices even when browser window with your page is not visible.
+Class Notify can be used to show Notifications. It's named this way to avoid conflicts with Vaadin's own Notification class.
 
-Vibration API allows to vibrate the device.
+Class Vibrate can be used to ask to vibrate the device. For Vaadin 7 vibrate API can use used with Vibrate add-on. This add-on is replacement for Vibrate add-on for Vaadin 8.
 
 ## Online demo
 
@@ -16,7 +16,7 @@ Official releases of this add-on are available at Vaadin Directory. For Maven in
 
 ## Building and running demo
 
-git clone <url of the MyComponent repository>
+git clone https://github.com/alump/Notify.git
 mvn clean install
 cd demo
 mvn jetty:run
@@ -31,7 +31,7 @@ Note that Eclipse may give "Plugin execution not covered by lifecycle configurat
 
 ## Release notes
 
-### 0.1.0 (TBD)
+### 0.1.0 (2017-03-22)
 - Initial release
 
 ## Issue tracking
@@ -52,7 +52,9 @@ Contributions are welcome, but there are no guarantees that they are accepted as
 
 Add-on is distributed under Apache License 2.0. For license terms, see LICENSE.txt.
 
-Notify is written by Sami Viitanen
+Notify is written by Sami Viitanen sami.viitanen@gmail.com.
+
+Notification sound used in demo/test application is from: https://www.freesound.org/people/morrisjm/sounds/268756/
 
 # Developer Guide
 
@@ -60,24 +62,23 @@ Notify is written by Sami Viitanen
 
 Here is a simple example on how to try out the add-on component:
 
-<...>
+```java
+// Very simple way to do it...
 
-For a more comprehensive example, see src/test/java/org/vaadin/template/demo/DemoUI.java
+Notify.show("Hey you!", "Do you like this notification?");
 
-## Features
+// Or more advanced way, with icon and timeout
 
-### Feature A
+Notify.show(new NotifyItem()
+   .setTitle("Hey you!")
+   .setBody("Do you like this notification?")
+   .setIcon(new ThemeResource("image/myimage.png"))
+   .setTimeout(5));
 
-<...>
+// You can also catch when user clicks the notification
 
-### Feature B
-
-<...>
-
-### Feature C
-
-<...>
-
-## API
-
-MyComponent JavaDoc is available online at <...>
+Notify.show(new NotifyItem()
+   .setTitle("I'm clickable!")
+   .setBody("Please click me...")
+   .setClickListener(this::doSomething));
+```

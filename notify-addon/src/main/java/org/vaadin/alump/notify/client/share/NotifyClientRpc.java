@@ -4,7 +4,7 @@ import com.vaadin.shared.communication.ClientRpc;
 
 public interface NotifyClientRpc extends ClientRpc {
 
-    void showNotification(NotifyNotification notification);
+    void showNotification(SharedNotification notification);
 
     void askPermission();
 

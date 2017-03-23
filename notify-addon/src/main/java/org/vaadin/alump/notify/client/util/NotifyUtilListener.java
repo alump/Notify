@@ -3,8 +3,10 @@ package org.vaadin.alump.notify.client.util;
 import org.vaadin.alump.notify.client.share.NotifyState;
 
 /**
- * Created by alump on 21/03/2017.
+ * Listener for NotifyUtil events
  */
-public interface ClientNotifyStateListener {
+public interface NotifyUtilListener {
     void onNewClientNotifyState(NotifyState state);
+    void onNotificationHandled(int id);
+    void onNotificationClicked(int id);
 }

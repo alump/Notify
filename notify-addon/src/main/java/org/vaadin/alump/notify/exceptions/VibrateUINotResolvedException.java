@@ -1,5 +1,5 @@
 /**
- * NotifyUINotResolvedException.java (Notify)
+ * VibrateUINotResolvedException.java (Notify)
  *
  * Copyright 2017 Vaadin Ltd, Sami Viitanen <sami.viitanen@vaadin.org>
  *
@@ -18,10 +18,10 @@
 package org.vaadin.alump.notify.exceptions;
 
 /**
- * Exception throws when UI could not be resolved.
+ * Exception thrown when UI could not be resolved
  */
-public class NotifyUINotResolvedException extends NotifyRuntimeException {
-    public NotifyUINotResolvedException() {
-        super("Failed to resolve UI");
+public class VibrateUINotResolvedException extends RuntimeException {
+    public VibrateUINotResolvedException() {
+        super("Failed to resolve UI automatically. Try to use version of method with ui parameter.");
     }
 }
