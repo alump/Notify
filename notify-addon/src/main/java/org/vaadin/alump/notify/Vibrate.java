@@ -19,7 +19,6 @@ package org.vaadin.alump.notify;
 
 import com.vaadin.server.AbstractExtension;
 
-import com.vaadin.server.Extension;
 import com.vaadin.ui.UI;
 import org.vaadin.alump.notify.client.share.VibrateClientRpc;
 import org.vaadin.alump.notify.client.share.VibrateServerRpc;

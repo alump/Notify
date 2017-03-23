@@ -1,5 +1,7 @@
 # Notity Add-on for Vaadin 8
 
+[![Build Status](http://siika.fi:8888/jenkins/job/Notify%20(Vaadin)/badge/icon)](http://siika.fi:8888/jenkins/job/Notify%20(Vaadin)/)
+
 Notify add-on offer new HTML5 ways to notify users when events happens on web application. It uses Notification and Vibrate APIs on client side.
 
 Class Notify can be used to show Notifications. It's named this way to avoid conflicts with Vaadin's own Notification class.
@@ -84,4 +86,8 @@ Notify.show(new NotifyItem()
    .setTitle("I'm clickable!")
    .setBody("Please click me...")
    .setClickListener(this::doSomething));
+
+// And simple vibrate demo (will vibrate 200 millisecons)
+
+Vibrate.vibrate(200);
 ```
