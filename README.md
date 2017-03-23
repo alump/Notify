@@ -31,6 +31,9 @@ Note that Eclipse may give "Plugin execution not covered by lifecycle configurat
 
 ## Release notes
 
+### 0.1.1 (TBD)
+- TBD
+
 ### 0.1.0 (2017-03-22)
 - Initial release
 

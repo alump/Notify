@@ -163,8 +163,6 @@ public class NotifyUtil {
                 event.preventDefault();
                 @org.vaadin.alump.notify.client.util.NotifyUtil::onNotificationClicked(*)(id);
                 if(clickable == 2) {
-                    console.log("Trying to close the notification, as it was clicked");
-                    console.log(event);
                     n.close();
                 }
             };

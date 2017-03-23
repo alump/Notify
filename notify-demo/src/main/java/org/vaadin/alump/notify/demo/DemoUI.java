@@ -298,8 +298,7 @@ public class DemoUI extends UI implements NotifyStateListener
                 .setBody("Click here to navigate to project's GitHub page")
                 .setIcon(new ThemeResource("images/github.png"))
                 .setClickListener(e -> {
-                    System.out.println("Received click signal");
-                    Page.getCurrent().open(GITHUB_URL, "githubpage", true);
+                    Page.getCurrent().setLocation(GITHUB_URL);
                 }));
     }
 
