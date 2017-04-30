@@ -1,6 +1,6 @@
 # Notity Add-on for Vaadin 8
 
-[![Build Status](https://siika.fi/jenkins/job/Notify%20(Vaadin)/badge/icon)](https://siika.fi/jenkins/job/Notify%20(Vaadin)/)
+[![Build Status](https://epic.siika.fi/jenkins/job/Notify%20(Vaadin)/badge/icon)](https://epic.siika.fi/jenkins/job/Notify%20(Vaadin)/)
 
 Notify add-on offer new HTML5 ways to notify users when events happens on web application. It uses Notification and Vibrate APIs on client side.
 
