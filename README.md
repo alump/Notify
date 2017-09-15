@@ -1,4 +1,4 @@
-# Notity Add-on for Vaadin 8
+# Notity Add-on for Vaadin 7
 
 [![Build Status](https://epic.siika.fi/jenkins/job/Notify%20(Vaadin)/badge/icon)](https://epic.siika.fi/jenkins/job/Notify%20(Vaadin)/)
 
@@ -6,11 +6,11 @@ Notify add-on offer new HTML5 ways to notify users when events happens on web ap
 
 Class Notify can be used to show Notifications. It's named this way to avoid conflicts with Vaadin's own Notification class.
 
-Class Vibrate can be used to ask to vibrate the device. For Vaadin 7 vibrate API can use used with Vibrate add-on. This add-on is replacement for Vibrate add-on for Vaadin 8.
+Class Vibrate can be used to ask to vibrate the device. For Vaadin 7 vibrate API can use used with Vibrate add-on.
 
 ## Online demo
 
-Try the add-on demo at http://app.siika.fi/NotifyDemo
+Try the add-on demo (Vaadin 8 version) at http://app.siika.fi/NotifyDemo
 
 ## Download release
 
@@ -33,11 +33,9 @@ Note that Eclipse may give "Plugin execution not covered by lifecycle configurat
 
 ## Release notes
 
-### 0.1.1 (TBD)
-- TBD
 
-### 0.1.0 (2017-03-22)
-- Initial release
+### 0.1.0-vaadin7 (2017-09-15)
+- Backport of 0.1.0 to Vaadin 7
 
 ## Issue tracking
 

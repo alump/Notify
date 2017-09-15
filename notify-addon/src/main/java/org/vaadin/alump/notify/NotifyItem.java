@@ -19,8 +19,6 @@ package org.vaadin.alump.notify;
 
 import com.vaadin.server.Resource;
 
-import java.util.Optional;
-
 /**
  * Notify notification. Called NotifyItem to avoid conflicts with Notification class on Vaadin.
  */
@@ -121,28 +119,28 @@ public class NotifyItem {
         return title;
     }
 
-    public Optional<String> getBody() {
-        return Optional.ofNullable(body);
+    public String getBody() {
+        return body;
     }
 
-    public Optional<Resource> getIcon() {
-        return Optional.ofNullable(icon);
+    public Resource getIcon() {
+        return icon;
     }
 
-    public Optional<Resource> getSound() {
-        return Optional.ofNullable(sound);
+    public Resource getSound() {
+        return sound;
     }
 
-    public Optional<NotifyClickListener> getClickListener() {
-        return Optional.ofNullable(clickListener);
+    public NotifyClickListener getClickListener() {
+        return clickListener;
     }
 
     /**
      * Get timeout of this notification
      * @return Specific timeout for this notification if defined, in milliseconds
      */
-    public Optional<Integer> getTimeoutMs() {
-        return Optional.ofNullable(timeoutMs);
+    public Integer getTimeoutMs() {
+        return timeoutMs;
     }
 
 }

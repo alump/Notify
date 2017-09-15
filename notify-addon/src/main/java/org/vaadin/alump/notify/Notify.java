@@ -20,6 +20,7 @@ package org.vaadin.alump.notify;
 
 import com.vaadin.server.AbstractExtension;
 
+import com.vaadin.server.Extension;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.UI;
 import org.vaadin.alump.notify.client.share.*;
@@ -28,7 +29,10 @@ import org.vaadin.alump.notify.exceptions.NotificationsDeniedByUserException;
 import org.vaadin.alump.notify.exceptions.NotifyRuntimeException;
 import org.vaadin.alump.notify.exceptions.NotifyUINotResolvedException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -48,7 +52,9 @@ public class Notify extends AbstractExtension {
             NotifyState oldState = newState;
             Notify.this.clientState = newState;
             NotifyStateEvent event = new NotifyStateEvent(Notify.this.getUI(), oldState, newState);
-            stateListeners.forEach(l -> l.onNotifyStateChange(event));
+            for (NotifyStateListener l : stateListeners) {
+                l.onNotifyStateChange(event);
+            }
         }
 
         @Override
@@ -65,7 +71,9 @@ public class Notify extends AbstractExtension {
                 return;
             }
             final NotifyClickEvent event = new NotifyClickEvent(notification);
-            notification.getClickListener().ifPresent(l -> l.onNotificationClick(event));
+            if(notification.getClickListener() != null) {
+                notification.getClickListener().onNotificationClick(event);
+            }
         }
     };
 
@@ -89,11 +97,21 @@ public class Notify extends AbstractExtension {
     }
 
     protected static Notify getInstance(UI ui) {
-        return getInstanceOptional(ui).orElseGet(() -> new Notify(ui));
+        Notify instance = getInstanceOptional(ui);
+        if(instance != null) {
+            return (Notify)instance;
+        } else {
+            return new Notify(ui);
+        }
     }
 
-    protected static Optional<Notify> getInstanceOptional(UI ui) {
-        return ui.getExtensions().stream().filter(e -> e instanceof Notify).findFirst().map(e -> (Notify)e);
+    protected static Notify getInstanceOptional(UI ui) {
+        for (Extension extension : ui.getExtensions()) {
+            if(extension instanceof Notify) {
+                return (Notify)extension;
+            }
+        }
+        return null;
     }
 
     protected void instanceAskPermission() {
@@ -109,19 +127,23 @@ public class Notify extends AbstractExtension {
     }
 
     protected String getIconResourceKey(int notificationNumber, NotifyItem notification) {
-        return notification.getIcon().map(resource -> {
+        if(notification.getIcon() != null) {
             String resourceKey = getIconResourceKey(notificationNumber);
-            setResource(resourceKey, resource);
+            setResource(resourceKey, notification.getIcon());
             return resourceKey;
-        }).orElse(null);
+        } else {
+            return null;
+        }
     }
 
     protected String getSoundResourceKey(int notificationNumber, NotifyItem notification) {
-        return notification.getSound().map(resource -> {
+        if(notification.getSound() != null) {
             String resourceKey = getSoundResourceKey(notificationNumber);
-            setResource(resourceKey, resource);
+            setResource(resourceKey, notification.getSound());
             return resourceKey;
-        }).orElse(null);
+        } else {
+            return null;
+        }
     }
 
     protected SharedNotification generateSharedNotification(NotifyItem item) {
@@ -129,10 +151,10 @@ public class Notify extends AbstractExtension {
 
         SharedNotification shared = new SharedNotification(notificationNumber);
         shared.title = item.getTitle();
-        shared.body = item.getBody().orElse(null);
+        shared.body = item.getBody();
         shared.iconRes = getIconResourceKey(notificationNumber, item);
-        shared.hasClickListener = item.getClickListener().isPresent();
-        shared.timeoutMs = item.getTimeoutMs().orElse(null);
+        shared.hasClickListener = item.getClickListener() != null;
+        shared.timeoutMs = item.getTimeoutMs();
 
         return shared;
     }
@@ -290,7 +312,12 @@ public class Notify extends AbstractExtension {
      * @return What is client state of Notification API
      */
     public static NotifyState getClientState(UI ui) {
-        return getInstanceOptional(ui).map(e -> e.clientState).orElse(NotifyState.UNINITIALIZED);
+        Notify instance = getInstanceOptional(ui);
+        if(instance == null) {
+            return NotifyState.UNINITIALIZED;
+        } else {
+            return instance.clientState;
+        }
     }
 
     /**
@@ -303,7 +330,11 @@ public class Notify extends AbstractExtension {
     }
 
     private static UI resolveUI() throws NotifyUINotResolvedException {
-        return Optional.ofNullable(UI.getCurrent()).orElseThrow(() -> new NotifyUINotResolvedException());
+        UI ui = UI.getCurrent();
+        if(ui == null) {
+            throw new NotifyUINotResolvedException();
+        }
+        return ui;
     }
 
     private void instanceSetDefaultTimeout(Integer milliseconds) {

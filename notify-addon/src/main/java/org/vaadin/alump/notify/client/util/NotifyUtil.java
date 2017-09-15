@@ -36,12 +36,17 @@ public class NotifyUtil {
         LOGGER.info("notification permission granted");
         setState(NotifyState.READY);
 
-        queue.forEach(n -> show(n));
+        for (ClientNotification n : queue) {
+            show(n);
+        }
+
         queue.clear();
     }
 
     private static void onNotificationClicked(int id) {
-        listeners.forEach(l -> l.onNotificationClicked(id));
+        for (NotifyUtilListener listener : listeners) {
+            listener.onNotificationClicked(id);
+        }
     }
 
     private static void permissionDenied() {
@@ -70,7 +75,9 @@ public class NotifyUtil {
     private static void setState(NotifyState newStatus) {
         if(state != newStatus) {
             state = newStatus;
-            listeners.forEach(l -> l.onNewClientNotifyState(newStatus));
+            for (NotifyUtilListener listener : listeners) {
+                listener.onNewClientNotifyState(newStatus);
+            }
         }
     }
 
@@ -177,6 +184,8 @@ public class NotifyUtil {
     }
 
     private static void fireNotificationHandled(int id) {
-        listeners.forEach(l -> l.onNotificationHandled(id));
+        for (NotifyUtilListener listener : listeners) {
+            listener.onNotificationHandled(id);
+        }
     }
 }

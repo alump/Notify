@@ -19,6 +19,7 @@ package org.vaadin.alump.notify;
 
 import com.vaadin.server.AbstractExtension;
 
+import com.vaadin.server.Extension;
 import com.vaadin.ui.UI;
 import org.vaadin.alump.notify.client.share.VibrateClientRpc;
 import org.vaadin.alump.notify.client.share.VibrateServerRpc;
@@ -26,7 +27,6 @@ import org.vaadin.alump.notify.exceptions.VibrateUINotResolvedException;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Interface to call browser to vibrate the device
@@ -62,8 +62,19 @@ public class Vibrate extends AbstractExtension {
      * @return Instance of Vibrare
      */
     protected static Vibrate get(UI ui) {
-        return ui.getExtensions().stream().filter(e -> e instanceof Vibrate).map(e -> (Vibrate)e).findFirst()
-                .orElseGet(() -> new Vibrate(ui));
+        Vibrate instance = null;
+        for (Extension extension : ui.getExtensions()) {
+            if(extension instanceof Vibrate) {
+                instance = (Vibrate)extension;
+                break;
+            }
+        }
+
+        if(instance == null) {
+            instance = new Vibrate(ui);
+        }
+
+        return instance;
     }
 
     /**
@@ -182,15 +193,15 @@ public class Vibrate extends AbstractExtension {
         getRpcProxy(VibrateClientRpc.class).vibratePattern(steps);
     }
 
-    private Optional<Boolean> instanceIsSupported() {
-        return Optional.ofNullable(clientSupport);
+    private Boolean instanceIsSupported() {
+        return clientSupport;
     }
 
-    public static Optional<Boolean> isSupported() {
+    public static Boolean isSupported() {
         return get().instanceIsSupported();
     }
 
-    public static Optional<Boolean> isSupported(UI ui) {
+    public static Boolean isSupported(UI ui) {
         return get(ui).instanceIsSupported();
     }
 }
