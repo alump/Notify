@@ -1,3 +1,6 @@
+[![Published on Vaadin  Directory](https://img.shields.io/badge/Vaadin%20Directory-published-00b4f0.svg)](https://vaadin.com/directory/component/notify)
+[![Stars on Vaadin Directory](https://img.shields.io/vaadin-directory/star/notify.svg)](https://vaadin.com/directory/component/notify)
+
 # Notity Add-on for Vaadin 8
 
 [![Build Status](https://epic.siika.fi/jenkins/job/Notify%20(Vaadin)/badge/icon)](https://epic.siika.fi/jenkins/job/Notify%20(Vaadin)/)
