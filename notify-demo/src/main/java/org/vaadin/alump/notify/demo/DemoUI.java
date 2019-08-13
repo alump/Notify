@@ -18,7 +18,7 @@
 package org.vaadin.alump.notify.demo;
 
 import com.vaadin.annotations.Push;
-import com.vaadin.event.dd.acceptcriteria.Not;
+import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.server.*;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.*;
@@ -34,7 +34,7 @@ import org.vaadin.alump.notify.client.share.NotifyState;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Objects;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Theme("demo")
@@ -45,7 +45,7 @@ public class DemoUI extends UI implements NotifyStateListener
 {
     private TextField title;
     private TextField body;
-    private ComboBox<Resource> icon;
+    private ComboBox icon;
     private Label stateLabel;
     private AtomicInteger delayedCounter = new AtomicInteger(0);
     private Collection<Component> disableIfDenied = new ArrayList<>();
@@ -105,23 +105,30 @@ public class DemoUI extends UI implements NotifyStateListener
         stateLabel.setCaption("Notify Client State");
         infoRow.addComponent(stateLabel);
 
-        ComboBox<Integer> defaultTimeout = new ComboBox<>();
+        ComboBox defaultTimeout = new ComboBox();
         defaultTimeout.setCaption("Default timeout");
-        defaultTimeout.setItems(0, 5000, 10000, 30000, 60000);
-        defaultTimeout.setItemCaptionGenerator(value -> {
+        List<Integer> timeoutOptions = new ArrayList<>();
+        timeoutOptions.add(0);
+        timeoutOptions.add(5000);
+        timeoutOptions.add(10000);
+        timeoutOptions.add(30000);
+        timeoutOptions.add(60000);
+        defaultTimeout.setContainerDataSource(new IndexedContainer(timeoutOptions));
+
+        timeoutOptions.forEach(value -> {
             if(value == 0) {
-                return "No timeout";
+                defaultTimeout.setItemCaption(value, "No timeout");
             } else {
-                return "" + (value / 1000) + " seconds";
+                defaultTimeout.setItemCaption(value, "" + (value / 1000) + " seconds");
             }
         });
-        defaultTimeout.addValueChangeListener(e -> Notify.setDefaultTimeout(e.getValue()));
+        defaultTimeout.addValueChangeListener(e -> Notify.setDefaultTimeout((Integer)e.getProperty().getValue()));
         defaultTimeout.setValue(10000);
         infoRow.addComponent(defaultTimeout);
         disableIfDenied.add(defaultTimeout);
 
         CheckBox closeOnClick = new CheckBox("Close notifications when clicked");
-        closeOnClick.addValueChangeListener(e -> Notify.setCloseOnClick(e.getValue()));
+        closeOnClick.addValueChangeListener(e -> Notify.setCloseOnClick((boolean)e.getProperty().getValue()));
         infoRow.addComponent(closeOnClick);
         disableIfDenied.add(closeOnClick);
 
@@ -179,22 +186,23 @@ public class DemoUI extends UI implements NotifyStateListener
         body.setValue("Write body here");
         editor.addComponent(body);
 
-        icon = new ComboBox<>();
-        icon.setCaption("Icon");
+        icon = new ComboBox();
         ThemeResource defaultValue = new ThemeResource("images/yunowork.png");
-        icon.setItems(
-                new ThemeResource("images/chavatar.png"),
-                new ThemeResource("images/cat.jpg"),
-                new ThemeResource("images/sound.png"),
-                new ThemeResource("images/github.png"),
-                defaultValue);
-        icon.setItemCaptionGenerator(resource -> {
+        List<ThemeResource> comboBoxOptions = new ArrayList<>();
+        comboBoxOptions.add(new ThemeResource("images/chavatar.png"));
+        comboBoxOptions.add(new ThemeResource("images/cat.jpg"));
+        comboBoxOptions.add(new ThemeResource("images/sound.png"));
+        comboBoxOptions.add(new ThemeResource("images/github.png"));
+        comboBoxOptions.add(defaultValue);
+        icon.setContainerDataSource(new IndexedContainer(comboBoxOptions));
+        icon.setCaption("Icon");
+        comboBoxOptions.forEach(resource -> {
             if(resource instanceof ThemeResource) {
                 ThemeResource themeResource = (ThemeResource)resource;
                 String[] parts = themeResource.getResourceId().split("/");
-                return parts[parts.length - 1];
+                icon.setItemCaption(resource, parts[parts.length - 1]);
             } else {
-                return resource.toString();
+                icon.setItemCaption(resource, resource.toString());
             }
         });
         icon.setValue(defaultValue);
@@ -220,7 +228,7 @@ public class DemoUI extends UI implements NotifyStateListener
         vibrateRow.setMargin(new MarginInfo(false, false, false, true));
 
         Button vibrateButton = new Button("Vibrate", e -> {
-            if(Vibrate.isSupported().orElse(true)) {
+            if(!Boolean.FALSE.equals(Vibrate.isSupported())) {
                 Vibrate.vibrate(200);
             } else {
                 Notification.show("Looks like Vibrate API is not supported");
@@ -244,13 +252,13 @@ public class DemoUI extends UI implements NotifyStateListener
     }
 
     private void showEditor(Button.ClickEvent event) {
-        Notify.show(title.getValue(), body.getValue(), icon.getValue());
+        Notify.show(title.getValue(), body.getValue(), (Resource)icon.getValue());
     }
 
     private void showEditorWithDelay(Button.ClickEvent event) {
         final String titleValue = title.getValue();
         final String bodyValue = body.getValue();
-        final Resource iconValue = icon.getValue();
+        final Resource iconValue = (Resource)icon.getValue();
 
         Thread delayThread = new Thread(() -> {
             try {
